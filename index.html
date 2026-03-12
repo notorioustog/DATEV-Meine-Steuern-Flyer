@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DATEV Meine Steuern — Steuerkanzlei Karin Gerstmeier-Metz</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* Design-Tokens aligned with kanzlei-website */
+  --background: #FFFFFF;
+  --foreground: hsl(210, 24%, 16%);       /* Anthrazit text */
+  --primary: hsl(355, 78%, 56%);           /* Brand Red #D93045 */
+  --primary-dark: hsl(355, 78%, 42%);      /* Hover red */
+  --primary-light: hsl(355, 78%, 97%);     /* Light red bg */
+  --muted-fg: hsl(210, 12%, 45%);          /* Muted text */
+  --border: hsl(210, 20%, 90%);            /* Borders */
+  --radius: 0.5rem;
+
+  /* Gray scale */
+  --g50: hsl(210, 20%, 98%);
+  --g100: hsl(210, 20%, 96%);
+  --g200: hsl(210, 20%, 90%);
+  --g300: hsl(210, 15%, 82%);
+  --g400: hsl(210, 10%, 65%);
+  --g500: hsl(210, 8%, 45%);
+  --g600: hsl(210, 10%, 35%);
+  --g700: hsl(210, 14%, 28%);
+
+  --green: #059669;
+  --green-light: #ECFDF5;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Layout dimensions */
+  --header-h: 52px;
+  --nav-h: 72px;
+}
+
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--background);
+  color:var(--foreground);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.5;
+  overflow-x:hidden;
+}
+
+/* Container */
+.container{max-width:960px;margin:0 auto;padding:0 32px}
+@media(max-width:640px){.container{padding:0 20px}}
+
+/* Progress bar */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--primary);z-index:100;transition:width .4s ease;border-radius:0 2px 2px 0}
+
+/* Header */
+.kanzlei-header{
+  position:fixed;top:0;left:0;right:0;z-index:90;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  height:var(--header-h);display:flex;align-items:center;
+}
+.kanzlei-header .container{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.kanzlei-name{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--foreground)}
+.kanzlei-sub{font-size:11px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;color:var(--g500)}
+.slide-indicator{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);flex-shrink:0}
+@media(max-width:480px){.kanzlei-name{font-size:11px;letter-spacing:.02em}.kanzlei-sub{display:none}}
+
+/* Bottom nav */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:90;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  height:calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+  display:flex;align-items:center;
+}
+.nav .container{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font);font-size:12px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  background:none;border:1px solid var(--g300);color:var(--foreground);
+  padding:12px 24px;min-height:44px;
+  border-radius:var(--radius);
+  cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;user-select:none;
+}
+@media(hover:hover){.nav-btn:hover{background:var(--foreground);color:var(--background);border-color:var(--foreground)}}
+.nav-btn:active{transform:scale(.97)}
+.nav-btn:disabled{opacity:.2;cursor:default;background:none;color:var(--foreground);border-color:var(--g300);transform:none}
+
+/* Nav dots with proper touch targets */
+.nav-dots{display:flex;gap:8px;align-items:center}
+.nav-dot{
+  width:8px;height:8px;border:none;
+  background:var(--g300);cursor:pointer;
+  transition:all .3s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;padding:0;
+  position:relative;border-radius:4px;
+}
+.nav-dot::before{content:'';position:absolute;inset:-18px}
+.nav-dot.active{width:32px;background:var(--primary);border-radius:4px}
+@media(max-width:640px){.nav-btn{padding:12px 16px;font-size:11px;gap:6px}.nav-btn svg{width:12px;height:12px}}
+
+/* Slides — use dvh for proper mobile viewport */
+.slide{
+  display:none;
+  min-height:100dvh;
+  padding:calc(var(--header-h) + 28px) 0 calc(var(--nav-h) + 28px + env(safe-area-inset-bottom, 0px));
+}
+.slide.active{display:block}
+
+/* Fade animation */
+.slide.active .fade{animation:fadeIn .6s ease forwards;opacity:0}
+@keyframes fadeIn{to{opacity:1}}
+.fade:nth-child(1){animation-delay:0s}
+.fade:nth-child(2){animation-delay:.08s}
+.fade:nth-child(3){animation-delay:.16s}
+.fade:nth-child(4){animation-delay:.24s}
+.fade:nth-child(5){animation-delay:.32s}
+.fade:nth-child(6){animation-delay:.4s}
+.fade:nth-child(7){animation-delay:.48s}
+.fade:nth-child(8){animation-delay:.56s}
+.fade:nth-child(9){animation-delay:.64s}
+.fade:nth-child(10){animation-delay:.72s}
+.fade:nth-child(11){animation-delay:.8s}
+.fade:nth-child(12){animation-delay:.88s}
+
+/* Typography */
+.t-hero{font-size:clamp(2.8rem,6vw,4.5rem);font-weight:700;line-height:1.0;letter-spacing:-.035em;color:var(--foreground)}
+.t-section{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;line-height:1.15;letter-spacing:-.025em;color:var(--foreground)}
+.t-overline{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary)}
+.t-body{font-size:15px;font-weight:400;line-height:1.7;color:var(--muted-fg)}
+.t-body-lg{font-size:17px;font-weight:400;line-height:1.7;color:var(--muted-fg)}
+.t-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--g500)}
+.divider-thick{height:4px;background:var(--primary);width:48px;margin:24px 0;border-radius:2px}
+
+/* Hero slide */
+.hero{
+  display:flex;flex-direction:column;justify-content:center;
+  min-height:calc(100dvh - var(--header-h) - var(--nav-h) - 80px);
+  padding-top:20px;position:relative;overflow:hidden;
+}
+.hero-number{
+  font-size:clamp(8rem,18vw,14rem);font-weight:700;line-height:.85;letter-spacing:-.05em;
+  color:var(--g100);position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  pointer-events:none;user-select:none;
+}
+.hero-intro{max-width:640px;position:relative;z-index:1}
+.hero-intro .t-overline{margin-bottom:24px}
+.hero-intro .t-hero{margin-bottom:24px}
+.hero-intro .t-body-lg{margin-bottom:40px;max-width:480px}
+
+/* CTA button style matching website */
+.hero-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--primary);color:var(--background);
+  font-family:var(--font);font-size:13px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;
+  padding:16px 36px;min-height:48px;border:none;
+  border-radius:var(--radius);
+  cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+@media(hover:hover){.hero-cta:hover{background:var(--primary-dark);transform:translateY(-1px)}}
+.hero-cta:active{transform:scale(.97)}
+.hero-cta svg{transition:transform .2s}
+@media(hover:hover){.hero-cta:hover svg{transform:translateX(4px)}}
+
+/* Section headers */
+.section-top{padding-top:20px;margin-bottom:48px}
+.section-top .t-overline{margin-bottom:16px}
+.section-top .t-section{margin-bottom:12px;max-width:600px}
+.section-top .t-body{max-width:520px}
+
+/* 2x2 Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+.grid-cell{background:var(--background);padding:32px}
+.grid-cell .t-overline{margin-bottom:12px}
+.grid-cell h3{font-size:16px;font-weight:600;line-height:1.3;margin-bottom:8px;letter-spacing:-.01em;color:var(--foreground)}
+.grid-cell p{font-size:14px;color:var(--muted-fg);line-height:1.6}
+
+/* Compare table */
+.compare-table{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:32px}
+@media(max-width:640px){.compare-table{grid-template-columns:1fr}}
+.compare-col{padding:32px}
+.compare-col:first-child{border-right:1px solid var(--border)}
+@media(max-width:640px){.compare-col:first-child{border-right:none;border-bottom:1px solid var(--border)}}
+.compare-col h3{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:8px;color:var(--foreground)}
+.compare-list{list-style:none;display:flex;flex-direction:column;gap:16px}
+.compare-list li{font-size:14px;line-height:1.55;display:flex;align-items:flex-start;gap:10px;color:var(--g700)}
+.marker{flex-shrink:0;width:6px;height:6px;margin-top:7px;border-radius:3px}
+.marker-old{background:var(--g400)}
+.marker-new{background:var(--primary)}
+
+/* Highlight row */
+.highlight-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:24px}
+@media(max-width:700px){.highlight-row{grid-template-columns:1fr}}
+.highlight-cell{background:var(--background);padding:28px;position:relative}
+.highlight-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.highlight-cell:nth-child(1)::before{background:var(--primary)}
+.highlight-cell:nth-child(2)::before{background:var(--g400)}
+.highlight-cell:nth-child(3)::before{background:var(--g200)}
+.highlight-cell h4{font-size:14px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em;color:var(--foreground)}
+.highlight-cell p{font-size:13px;color:var(--muted-fg);line-height:1.55}
+
+/* Feature list — fixed hover without layout shift */
+.feature-list{border-top:1px solid var(--border);margin-top:32px}
+.feature-row{
+  display:grid;grid-template-columns:48px 1fr;gap:24px;
+  padding:24px 16px;border-bottom:1px solid var(--border);
+  margin:0 -16px;transition:background .2s;
+}
+@media(hover:hover){.feature-row:hover{background:var(--g50)}}
+.feature-num{font-size:28px;font-weight:700;color:var(--g200);line-height:1;font-variant-numeric:tabular-nums}
+.feature-row h4{font-size:15px;font-weight:600;margin-bottom:4px;letter-spacing:-.01em;color:var(--foreground)}
+.feature-row p{font-size:14px;color:var(--muted-fg);line-height:1.6}
+
+/* Cost block */
+.cost-block{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:32px}
+.cost-main{padding:48px 32px;text-align:center;border-bottom:1px solid var(--border)}
+.cost-price{font-size:clamp(3rem,7vw,5rem);font-weight:700;letter-spacing:-.04em;line-height:1;margin:8px 0;color:var(--primary)}
+.cost-sub{font-size:15px;color:var(--muted-fg);line-height:1.6;max-width:480px;margin:16px auto 0}
+.cost-apps{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:640px){.cost-apps{grid-template-columns:1fr}}
+.cost-app{padding:24px 32px;border-right:1px solid var(--border)}
+.cost-app:last-child{border-right:none}
+@media(max-width:640px){.cost-app{border-right:none;border-bottom:1px solid var(--border)}.cost-app:last-child{border-bottom:none}}
+.cost-app h4{font-size:13px;font-weight:600;margin-bottom:4px;color:var(--foreground)}
+.cost-app p{font-size:13px;color:var(--g500);line-height:1.5}
+
+/* Timeline */
+.timeline{margin-top:32px;position:relative}
+.timeline::before{content:'';position:absolute;left:15px;top:16px;bottom:16px;width:1px;background:var(--g200)}
+.tl-step{display:flex;gap:24px;padding:20px 0;position:relative}
+.tl-marker{
+  width:32px;height:32px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+  background:var(--background);border:1.5px solid var(--g300);
+  border-radius:var(--radius);z-index:1;
+}
+.tl-marker-k{border-color:var(--primary);color:var(--primary)}
+.tl-marker-m{border-color:var(--g400);color:var(--g500)}
+.tl-marker-done{border-color:var(--green);color:var(--green);background:var(--green-light)}
+.tl-content{padding-top:4px;min-width:0}
+.tl-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;margin-bottom:6px;border-radius:calc(var(--radius) - 2px)}
+.tag-k{background:var(--primary);color:var(--background)}
+.tag-m{background:var(--g100);color:var(--g600)}
+.tag-both{background:var(--green-light);color:var(--green)}
+.tl-content h4{font-size:15px;font-weight:600;margin-bottom:4px;letter-spacing:-.01em;color:var(--foreground)}
+.tl-content p{font-size:14px;color:var(--muted-fg);line-height:1.6}
+
+/* CTA slide */
+.cta-slide{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  min-height:calc(100dvh - var(--header-h) - var(--nav-h) - 80px);
+  padding-top:20px;
+}
+.cta-slide .t-section{margin:16px 0 12px;max-width:500px}
+.cta-slide .t-body{max-width:440px;margin-bottom:40px}
+.cta-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:48px}
+.cta-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--primary);color:var(--background);
+  font-family:var(--font);font-size:13px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;
+  padding:16px 36px;min-height:48px;border:none;
+  border-radius:var(--radius);
+  cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+@media(hover:hover){.cta-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}}
+.cta-primary:active{transform:scale(.97)}
+.cta-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--background);color:var(--foreground);
+  font-family:var(--font);font-size:13px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;
+  padding:16px 36px;min-height:48px;border:1px solid var(--g300);
+  border-radius:var(--radius);
+  cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+@media(hover:hover){.cta-secondary:hover{border-color:var(--primary);color:var(--primary)}}
+.cta-secondary:active{transform:scale(.97)}
+@media(max-width:480px){
+  .cta-primary,.cta-secondary{width:100%;justify-content:center;padding:16px 24px}
+  .cta-actions{flex-direction:column;width:100%}
+}
+.cta-meta{display:flex;flex-wrap:wrap;gap:32px;justify-content:center}
+.cta-meta-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--g500)}
+.cta-meta-item .dot{width:6px;height:6px;background:var(--primary);border-radius:3px}
+
+/* Footer */
+.kanzlei-footer{
+  text-align:center;
+  padding:48px 0 calc(var(--nav-h) + 40px + env(safe-area-inset-bottom, 0px));
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g400);
+}
+
+/* Mobile refinements */
+@media(max-width:640px){
+  :root{--header-h:48px;--nav-h:64px}
+  .tl-step{gap:16px}
+  .tl-content p{font-size:13px}
+  .grid-cell{padding:24px}
+  .compare-col{padding:24px}
+  .highlight-cell{padding:20px}
+  .cost-main{padding:32px 20px}
+  .cost-app{padding:20px}
+  .feature-row{margin:0 -8px;padding:20px 8px;gap:16px}
+  .feature-num{font-size:24px}
+  .cta-meta{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="kanzlei-header">
+  <div class="container">
+    <div>
+      <div class="kanzlei-name">Steuerkanzlei Karin Gerstmeier-Metz</div>
+      <div class="kanzlei-sub">Steuerberatung</div>
+    </div>
+    <div class="slide-indicator" id="slideIndicator">01 / 07</div>
+  </div>
+</div>
+
+<div id="slides">
+
+<div class="slide active" data-slide="0">
+  <div class="container">
+    <div class="hero">
+      <div class="hero-number fade" aria-hidden="true">01</div>
+      <div class="hero-intro">
+        <div class="t-overline fade">Mandanten-Information 2025</div>
+        <h1 class="t-hero fade">Ihre Steuer&shy;erklärung<br>wird digital.</h1>
+        <p class="t-body-lg fade">Wir führen DATEV Meine Steuern ein — die sichere Online-Plattform für den papierlosen Beleg&shy;austausch zwischen Ihnen und unserer Kanzlei.</p>
+        <button class="hero-cta fade" type="button">Leitfaden starten <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="1">
+  <div class="container">
+    <div class="section-top">
+      <div class="t-overline fade">01 — Überblick</div>
+      <h2 class="t-section fade">Was ist DATEV Meine Steuern?</h2>
+      <div class="divider-thick fade"></div>
+      <p class="t-body fade">Ein sicheres Online-Portal im DATEV-Rechenzentrum, das den gesamten Beleg&shy;austausch rund um Ihre Einkommensteuer&shy;erklärung digitalisiert.</p>
+    </div>
+    <div class="grid-2 fade">
+      <div class="grid-cell"><div class="t-overline">Plattform</div><h3>Cloud-basiert und hochsicher</h3><p>Ihre Daten liegen verschlüsselt im DATEV-Rechenzentrum in Nürnberg. Nur Sie und unsere Kanzlei haben Zugriff — kein Drittanbieter, kein unsicherer E-Mail-Versand.</p></div>
+      <div class="grid-cell"><div class="t-overline">Zusammenarbeit</div><h3>Gemeinsame Arbeits&shy;umgebung</h3><p>Sie laden steuerrelevante Belege hoch — per Browser oder Smartphone-App. Wir sehen die Dokumente sofort und können direkt mit der Bearbeitung beginnen.</p></div>
+      <div class="grid-cell"><div class="t-overline">Erfassung</div><h3>Steuerliche Daten per Interview</h3><p>Neben Belegen erfassen Sie persönliche Angaben — z.&thinsp;B. zu Fahrtkosten, Homeoffice oder Versicherungen — über ein geführtes Interview direkt im Portal.</p></div>
+      <div class="grid-cell"><div class="t-overline">Prozess</div><h3>Durchgängig digital</h3><p>Vom Upload über die Steuererklärung bis zur digitalen Freizeichnung und zum Bescheid — alles in einem System, ohne Medienbruch.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="2">
+  <div class="container">
+    <div class="section-top">
+      <div class="t-overline fade">02 — Vorteile</div>
+      <h2 class="t-section fade">Warum sich der Umstieg lohnt</h2>
+      <div class="divider-thick fade"></div>
+      <p class="t-body fade">Die digitale Zusammenarbeit spart Zeit, schafft Transparenz und macht den Prozess für beide Seiten effizienter.</p>
+    </div>
+    <div class="compare-table fade">
+      <div class="compare-col">
+        <h3><span style="color:var(--g400)">—</span> Bisher: Pendelordner</h3>
+        <ul class="compare-list">
+          <li><span class="marker marker-old"></span>Belege am Jahresende zusammensuchen</li>
+          <li><span class="marker marker-old"></span>Ordner persönlich in der Kanzlei abgeben</li>
+          <li><span class="marker marker-old"></span>Rückfragen per Post oder Telefon</li>
+          <li><span class="marker marker-old"></span>Kein Überblick über den Bearbeitungsstand</li>
+          <li><span class="marker marker-old"></span>Papierbelege können verloren gehen</li>
+          <li><span class="marker marker-old"></span>Steuererklärung zum Unterschreiben abholen</li>
+        </ul>
+      </div>
+      <div class="compare-col">
+        <h3><span style="color:var(--primary)">&#9679;</span> Neu: DATEV Meine Steuern</h3>
+        <ul class="compare-list">
+          <li><span class="marker marker-new"></span>Belege unterjährig direkt hochladen</li>
+          <li><span class="marker marker-new"></span>Upload jederzeit, von überall — 24/7</li>
+          <li><span class="marker marker-new"></span>Rückfragen direkt im Portal klären</li>
+          <li><span class="marker marker-new"></span>Status jederzeit einsehbar</li>
+          <li><span class="marker marker-new"></span>Digitales Archiv im DATEV-Rechenzentrum</li>
+          <li><span class="marker marker-new"></span>Steuererklärung online freizeichnen</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight-row fade">
+      <div class="highlight-cell"><h4>Zeitersparnis</h4><p>Kein Sortieren, kein Abgabetermin in der Kanzlei. Belege einfach beim Erhalt abfotografieren.</p></div>
+      <div class="highlight-cell"><h4>Maximale Sicherheit</h4><p>Verschlüsselt im DATEV-Rechenzentrum. Kein Versand per E-Mail, keine unsicheren Dienste.</p></div>
+      <div class="highlight-cell"><h4>Schnellere Bearbeitung</h4><p>Wir starten sofort, sobald Ihre Belege vorliegen — ohne Wartezeit auf den Postweg.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="3">
+  <div class="container">
+    <div class="section-top">
+      <div class="t-overline fade">03 — Funktionen</div>
+      <h2 class="t-section fade">Was Sie mit dem Portal tun können</h2>
+      <div class="divider-thick fade"></div>
+      <p class="t-body fade">Nach der Einrichtung stehen Ihnen diese Funktionen zur Verfügung.</p>
+    </div>
+    <div class="feature-list">
+      <div class="feature-row fade"><div class="feature-num">01</div><div><h4>Belege hochladen</h4><p>Per Drag-and-Drop im Browser oder per Foto mit der App „DATEV Upload mobil" auf Ihrem Smartphone. JPG, PNG und PDF werden unterstützt.</p></div></div>
+      <div class="feature-row fade"><div class="feature-num">02</div><div><h4>Belege kategorisieren</h4><p>Ordnen Sie Belege vordefinierten Kategorien zu — Arbeitnehmer, Vermietung, Kapitalanlagen, außergewöhnliche Belastungen und mehr.</p></div></div>
+      <div class="feature-row fade"><div class="feature-num">03</div><div><h4>Steuerliche Daten im Interview erfassen</h4><p>Beantworten Sie einfache Fragen zu Fahrtkosten, Homeoffice, Versicherungen. Vorjahreswerte sind vorbelegt — oft genügt eine Bestätigung.</p></div></div>
+      <div class="feature-row fade"><div class="feature-num">04</div><div><h4>Kanzlei benachrichtigen</h4><p>Wenn alle Belege komplett sind, informieren Sie uns mit einem Klick. Wir starten sofort mit der Bearbeitung.</p></div></div>
+      <div class="feature-row fade"><div class="feature-num">05</div><div><h4>Persönliche Daten aktualisieren</h4><p>Adresse, Familienstand, Bankverbindung, Kinderfreibeträge — direkt im Portal ändern. Keine zusätzliche E-Mail nötig.</p></div></div>
+      <div class="feature-row fade"><div class="feature-num">06</div><div><h4>Steuererklärung online freizeichnen</h4><p>Wir stellen Ihre fertige Erklärung im Portal bereit. Mit einem Klick geben Sie die Übermittlung ans Finanzamt frei — ohne Ausdruck oder Unterschrift.</p></div></div>
+      <div class="feature-row fade"><div class="feature-num">07</div><div><h4>Bescheide und Dokumente empfangen</h4><p>Steuerbescheide und alle weiteren Dokumente erhalten Sie direkt im Portal. Jederzeit abrufbar, an einem Ort.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="4">
+  <div class="container">
+    <div class="section-top">
+      <div class="t-overline fade">04 — Kosten</div>
+      <h2 class="t-section fade">Was kostet DATEV Meine Steuern?</h2>
+      <div class="divider-thick fade"></div>
+      <p class="t-body fade">Die gute Nachricht: Für Sie als Mandant entstehen keine zusätzlichen DATEV-Softwarekosten.</p>
+    </div>
+    <div class="cost-block fade">
+      <div class="cost-main">
+        <div class="t-label">Zusätzliche DATEV-Lizenzkosten für Sie</div>
+        <div class="cost-price">0 &euro;</div>
+        <div class="cost-sub">DATEV Meine Steuern ist Bestandteil der E-Steuern-Pauschale, die bei jeder Einkommensteuer&shy;übermittlung anfällt. Die Nutzungskosten der Plattform übernehmen wir für Sie.</div>
+      </div>
+      <div class="cost-apps">
+        <div class="cost-app"><h4>DATEV SmartLogin App</h4><p>Kostenlos. Sichere Anmeldung per 2-Faktor-Authentifizierung. iOS und Android.</p></div>
+        <div class="cost-app"><h4>DATEV Upload mobil App</h4><p>Kostenlos. Belege abfotografieren und direkt hochladen. iOS und Android.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="5">
+  <div class="container">
+    <div class="section-top">
+      <div class="t-overline fade">05 — Einrichtung</div>
+      <h2 class="t-section fade">So starten wir gemeinsam</h2>
+      <div class="divider-thick fade"></div>
+      <p class="t-body fade">Sie nutzen künftig DATEV Meine Steuern zur digitalen Bereitstellung Ihrer Steuerunterlagen. Hier erfahren Sie Schritt für Schritt, wie die Einrichtung und Nutzung funktioniert.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-step fade"><div class="tl-marker tl-marker-k">1</div><div class="tl-content"><span class="tl-tag tag-k">Kanzlei</span><h4>Freischaltung und Registrierung</h4><p>Wir schalten DATEV Meine Steuern für Sie frei und registrieren Sie über die MyDATEV Mandantenregistrierung. Ihr Zugangsmedium (DATEV SmartLogin) wird bestellt.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-m">2</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>Registrierung / SmartLogin einrichten</h4><p>Sofern Sie bislang noch keinen DATEV SmartLogin besitzen, erhalten Sie von DATEV einen Brief per Post zur Registrierung. Auf diesem Schreiben befindet sich ein QR-Code. Scannen Sie diesen mit Ihrem Smartphone — Sie werden zur Installation der DATEV SmartLogin App weitergeleitet. Diese App dient künftig als Authentifizierung für den Zugang zu DATEV Meine Steuern.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-m">3</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>DATEV-Konto einrichten (bis 31.03.2026)</h4><p>Aus technischen Gründen gestaltet DATEV das Anmeldeverfahren neu. Die bisherigen Verfahren SmartCard / SmartLogin müssen bis spätestens 31.03.2026 mit einem persönlichen DATEV-Konto verknüpft werden. Danach ist eine Anmeldung ohne DATEV-Konto nicht mehr möglich.</p><p style="margin-top:8px">Nutzen Sie den <strong>DATEV-Konto-Assistenten</strong>, um ein neues DATEV-Konto zu erstellen und mit Ihrem Anmeldeverfahren zu verknüpfen — oder ein bereits vorhandenes DATEV-Konto zu verknüpfen. Bei der Erstellung wird zunächst eine Anmeldung mit SmartCard oder SmartLogin verlangt. Anschließend führt DATEV Sie schrittweise durch die Einrichtung.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-k">4</div><div class="tl-content"><span class="tl-tag tag-k">Kanzlei</span><h4>Zugriffsrechte vergeben</h4><p>Wir vergeben Ihnen in der DATEV Rechteverwaltung die Zugriffsrechte für die relevanten Steuerjahre.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-m">5</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>Web-Anwendung nutzen</h4><p>DATEV Meine Steuern ist eine Web-Anwendung. Rufen Sie die Anwendung unter <strong>datev.de/meine-steuern</strong> auf und öffnen Sie sie über den Button „Jetzt starten". Die Anmeldung erfolgt über DATEV SmartLogin — Sie benötigen dafür die SmartLogin-App auf Ihrem Smartphone.</p><p style="margin-top:8px">Innerhalb der Anwendung können Sie Ihre Belege den jeweiligen Steuerjahren zuordnen und hochladen — auch bereits unterjährig, sobald Unterlagen vorliegen. Beim Hochladen ist eine Ordnerstruktur vorgegeben, an der Sie sich orientieren können. Die Ordner können bei Bedarf auch angepasst oder erweitert werden.</p><p style="margin-top:8px">Sobald alle Unterlagen bereitgestellt sind, senden Sie uns innerhalb der Anwendung ein <strong>Startsignal zur Bearbeitung</strong>.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-m">6</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>App „Upload Mobil" nutzen</h4><p>Zur komfortablen Belegübermittlung empfehlen wir zusätzlich die App <strong>DATEV Upload Mobil</strong>. Damit können Sie Dokumente einfach abfotografieren und direkt als PDF in DATEV Meine Steuern hochladen.</p><p style="margin-top:8px"><em>Bitte beachten:</em> Die App dient ausschließlich der vereinfachten Belegübermittlung. Die Anwendung DATEV Meine Steuern selbst kann darin nicht genutzt werden.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-k">7</div><div class="tl-content"><span class="tl-tag tag-k">Kanzlei</span><h4>Steuererklärung und Bescheide bereitstellen</h4><p>Nach Fertigstellung Ihrer Steuererklärung stellen wir Ihnen diese in DATEV Meine Steuern zur Verfügung. Auf Wunsch senden wir Ihnen zusätzlich ein gedrucktes Exemplar. Auch eingehende Steuerbescheide können wir über die Anwendung für Sie bereitstellen.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-done">&#10003;</div><div class="tl-content"><span class="tl-tag tag-both">Gemeinsam</span><h4>Fragen? Wir helfen gerne.</h4><p>Sollten bei der Einrichtung oder Nutzung Fragen auftreten, unterstützen wir Sie selbstverständlich gerne — per Telefon, Video-Call oder persönlich.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="6">
+  <div class="container">
+    <div class="cta-slide">
+      <div class="t-overline fade">Nächster Schritt</div>
+      <h2 class="t-section fade">Bereit für den<br>digitalen Start?</h2>
+      <p class="t-body fade">Ob Sie neu bei uns sind oder uns bereits als Mandant vertrauen — wir richten DATEV Meine Steuern gerne für Sie ein und machen Sie fit für die papierlose Steuererklärung.</p>
+      <div class="cta-actions fade">
+        <button class="cta-primary" type="button">Termin vereinbaren <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <button class="cta-secondary" type="button">Per E-Mail anfragen</button>
+      </div>
+      <div class="cta-meta fade">
+        <div class="cta-meta-item"><span class="dot"></span> Einrichtung in ca. 15 Min.</div>
+        <div class="cta-meta-item"><span class="dot"></span> Höchste Datensicherheit</div>
+        <div class="cta-meta-item"><span class="dot"></span> Keine Zusatzkosten</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="kanzlei-footer">Steuerkanzlei Karin Gerstmeier-Metz &middot; Steuerberatung</div>
+
+<div class="nav">
+  <div class="container">
+    <button class="nav-btn" id="btnPrev" type="button" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Zurück</button>
+    <div class="nav-dots" id="dots"></div>
+    <button class="nav-btn" id="btnNext" type="button">Weiter <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  var cur = 0;
+
+  var btnPrev = document.getElementById('btnPrev');
+  var btnNext = document.getElementById('btnNext');
+  var dotsContainer = document.getElementById('dots');
+  var progressBar = document.getElementById('progress');
+  var slideIndicator = document.getElementById('slideIndicator');
+
+  /* Hero CTA navigates to slide 1 */
+  var heroCta = document.querySelector('.hero-cta');
+  if (heroCta) heroCta.addEventListener('click', function() { goSlide(1); });
+
+  /* CTA buttons — placeholder actions */
+  var ctaPrimary = document.querySelector('.cta-primary');
+  var ctaSecondary = document.querySelector('.cta-secondary');
+  if (ctaPrimary) ctaPrimary.addEventListener('click', function() {
+    alert('Hier Ihren Terminbuchungslink hinterlegen');
+  });
+  if (ctaSecondary) ctaSecondary.addEventListener('click', function() {
+    alert('Hier Ihre E-Mail-Adresse hinterlegen');
+  });
+
+  /* Build nav dots as proper buttons */
+  for (var i = 0; i < total; i++) {
+    var d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.setAttribute('type', 'button');
+    (function(idx) {
+      d.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        goSlide(idx);
+      });
+    })(i);
+    dotsContainer.appendChild(d);
+  }
+
+  function goSlide(n) {
+    if (n < 0 || n >= total || n === cur) return;
+    slides[cur].classList.remove('active');
+    cur = n;
+    slides[cur].classList.add('active');
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function nextSlide() { goSlide(cur + 1); }
+  function prevSlide() { goSlide(cur - 1); }
+
+  function updateUI() {
+    btnPrev.disabled = cur === 0;
+    btnNext.disabled = cur === total - 1;
+    var dots = dotsContainer.querySelectorAll('.nav-dot');
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].classList.toggle('active', i === cur);
+    }
+    progressBar.style.width = ((cur / (total - 1)) * 100) + '%';
+    slideIndicator.textContent = String(cur + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+  }
+
+  /* Nav button listeners */
+  btnPrev.addEventListener('click', function() { prevSlide(); });
+  btnNext.addEventListener('click', function() { nextSlide(); });
+
+  /* Keyboard navigation */
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+
+  /* Touch swipe — improved: stricter thresholds to avoid blocking scroll */
+  var touchStartX = 0;
+  var touchStartY = 0;
+  var touchStartTime = 0;
+  var slideContainer = document.getElementById('slides');
+
+  slideContainer.addEventListener('touchstart', function(e) {
+    var el = e.target;
+    if (el.closest('button, a, input, select, textarea, .nav, .kanzlei-header')) return;
+    touchStartX = e.changedTouches[0].clientX;
+    touchStartY = e.changedTouches[0].clientY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+
+  slideContainer.addEventListener('touchend', function(e) {
+    if (touchStartTime === 0) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    var dy = e.changedTouches[0].clientY - touchStartY;
+    var dt = Date.now() - touchStartTime;
+    touchStartTime = 0;
+
+    /* Stricter: >80px horizontal, 2.5:1 horizontal-to-vertical ratio, <350ms */
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2.5 && dt < 350) {
+      if (dx < 0) nextSlide();
+      else prevSlide();
+    }
+  }, { passive: true });
+
+  /* Touch handlers for nav buttons */
+  btnPrev.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    if (!this.disabled) prevSlide();
+  });
+  btnNext.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    if (!this.disabled) nextSlide();
+  });
+
+  updateUI();
+})();
+</script>
+</body>
+</html>
