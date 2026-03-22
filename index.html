@@ -221,7 +221,7 @@ body{
   margin:0 -16px;transition:background .2s;
 }
 @media(hover:hover){.feature-row:hover{background:var(--g50)}}
-.feature-num{font-size:28px;font-weight:700;color:var(--g200);line-height:1;font-variant-numeric:tabular-nums}
+.feature-num{font-size:28px;font-weight:700;color:var(--primary);line-height:1;font-variant-numeric:tabular-nums}
 .feature-row h4{font-size:15px;font-weight:600;margin-bottom:4px;letter-spacing:-.01em;color:var(--foreground)}
 .feature-row p{font-size:14px;color:var(--muted-fg);line-height:1.6}
 
@@ -249,13 +249,13 @@ body{
   background:var(--background);border:1.5px solid var(--g300);
   border-radius:var(--radius);z-index:1;
 }
-.tl-marker-k{border-color:var(--primary);color:var(--primary)}
-.tl-marker-m{border-color:var(--g400);color:var(--g500)}
+.tl-marker-k{border-color:var(--g400);color:var(--g500)}
+.tl-marker-m{border-color:var(--primary);color:var(--primary)}
 .tl-marker-done{border-color:var(--green);color:var(--green);background:var(--green-light)}
 .tl-content{padding-top:4px;min-width:0}
 .tl-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;margin-bottom:6px;border-radius:calc(var(--radius) - 2px)}
-.tag-k{background:var(--primary);color:var(--background)}
-.tag-m{background:var(--g100);color:var(--g600)}
+.tag-k{background:var(--g100);color:var(--g600)}
+.tag-m{background:var(--primary);color:var(--background)}
 .tag-both{background:var(--green-light);color:var(--green)}
 .tl-content h4{font-size:15px;font-weight:600;margin-bottom:4px;letter-spacing:-.01em;color:var(--foreground)}
 .tl-content p{font-size:14px;color:var(--muted-fg);line-height:1.6}
@@ -281,6 +281,7 @@ body{
 }
 @media(hover:hover){.cta-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}}
 .cta-primary:active{transform:scale(.97)}
+a.cta-primary{text-decoration:none}
 .cta-secondary{
   display:inline-flex;align-items:center;gap:8px;
   background:var(--background);color:var(--foreground);
@@ -343,9 +344,7 @@ body{
 <div class="slide active" data-slide="0">
   <div class="container">
     <div class="hero">
-      <div class="hero-number fade" aria-hidden="true">01</div>
       <div class="hero-intro">
-        <div class="t-overline fade">Mandanten-Information 2026</div>
         <h1 class="t-hero fade">Ihre Steuer&shy;erklärung<br>wird digital.</h1>
         <p class="t-body-lg fade">Wir führen DATEV Meine Steuern ein — die sichere Online-Plattform für den papierlosen Beleg&shy;austausch zwischen Ihnen und unserer Kanzlei.</p>
         <button class="hero-cta fade" type="button">Leitfaden starten <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -388,7 +387,7 @@ body{
           <li><span class="marker marker-old"></span>Rückfragen per Post oder Telefon</li>
           <li><span class="marker marker-old"></span>Kein Überblick über den Bearbeitungsstand</li>
           <li><span class="marker marker-old"></span>Papierbelege können verloren gehen</li>
-          <li><span class="marker marker-old"></span>Steuererklärung zum Unterschreiben abholen</li>
+          <li><span class="marker marker-old"></span>Steuererklärung und Unterschriftenlauf per Postversand</li>
         </ul>
       </div>
       <div class="compare-col">
@@ -421,7 +420,7 @@ body{
     </div>
     <div class="feature-list">
       <div class="feature-row fade"><div class="feature-num">01</div><div><h4>Belege hochladen</h4><p>Per Drag-and-Drop im Browser oder per Foto mit der App „DATEV Upload mobil" auf Ihrem Smartphone. JPG, PNG und PDF werden unterstützt.</p></div></div>
-      <div class="feature-row fade"><div class="feature-num">02</div><div><h4>Belege kategorisieren</h4><p>Ordnen Sie Belege vordefinierten Kategorien zu — Arbeitnehmer, Vermietung, Kapitalanlagen, außergewöhnliche Belastungen und mehr.</p></div></div>
+      <div class="feature-row fade"><div class="feature-num">02</div><div><h4>Belege kategorisieren</h4><p>Ordnen Sie Belege vordefinierten Kategorien zu — Arbeitnehmer, Vermietung, Kapitalanlagen, außergewöhnliche Belastungen und mehr. Dies ist optional – Sie müssen Ihre Dokumente nicht vorbereitend sortieren, haben aber die Möglichkeit dazu, wenn Ihnen Überblick und Ordnung wichtig ist.</p></div></div>
       <div class="feature-row fade"><div class="feature-num">03</div><div><h4>Steuerliche Daten im Interview erfassen</h4><p>Beantworten Sie einfache Fragen zu Fahrtkosten, Homeoffice, Versicherungen. Vorjahreswerte sind vorbelegt — oft genügt eine Bestätigung.</p></div></div>
       <div class="feature-row fade"><div class="feature-num">04</div><div><h4>Kanzlei benachrichtigen</h4><p>Wenn alle Belege komplett sind, informieren Sie uns mit einem Klick. Wir starten sofort mit der Bearbeitung.</p></div></div>
       <div class="feature-row fade"><div class="feature-num">05</div><div><h4>Persönliche Daten aktualisieren</h4><p>Adresse, Familienstand, Bankverbindung, Kinderfreibeträge — direkt im Portal ändern. Keine zusätzliche E-Mail nötig.</p></div></div>
@@ -443,7 +442,7 @@ body{
       <div class="cost-main">
         <div class="t-label">Zusätzliche DATEV-Lizenzkosten für Sie</div>
         <div class="cost-price">0 &euro;</div>
-        <div class="cost-sub">DATEV Meine Steuern ist Bestandteil der E-Steuern-Pauschale, die bei jeder Einkommensteuer&shy;übermittlung anfällt. Die Nutzungskosten der Plattform übernehmen wir für Sie.</div>
+        <div class="cost-sub">Die Nutzungskosten der Plattform übernehmen wir für Sie.</div>
       </div>
       <div class="cost-apps">
         <div class="cost-app"><h4>DATEV SmartLogin App</h4><p>Kostenlos. Sichere Anmeldung per 2-Faktor-Authentifizierung. iOS und Android.</p></div>
@@ -464,11 +463,11 @@ body{
     <div class="timeline">
       <div class="tl-step fade"><div class="tl-marker tl-marker-k">1</div><div class="tl-content"><span class="tl-tag tag-k">Kanzlei</span><h4>Freischaltung und Registrierung</h4><p>Wir schalten DATEV Meine Steuern für Sie frei und registrieren Sie über die MyDATEV Mandantenregistrierung. Ihr Zugangsmedium (DATEV SmartLogin) wird bestellt.</p></div></div>
       <div class="tl-step fade"><div class="tl-marker tl-marker-m">2</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>Registrierung / SmartLogin einrichten</h4><p>Sofern Sie bislang noch keinen DATEV SmartLogin besitzen, erhalten Sie von DATEV einen Brief per Post zur Registrierung. Auf diesem Schreiben befindet sich ein QR-Code. Scannen Sie diesen mit Ihrem Smartphone — Sie werden zur Installation der DATEV SmartLogin App weitergeleitet. Diese App dient künftig als Authentifizierung für den Zugang zu DATEV Meine Steuern.</p></div></div>
-      <div class="tl-step fade"><div class="tl-marker tl-marker-m">3</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>DATEV-Konto einrichten (bis 31.03.2026)</h4><p>Aus technischen Gründen gestaltet DATEV das Anmeldeverfahren neu. Die bisherigen Verfahren SmartCard / SmartLogin müssen bis spätestens 31.03.2026 mit einem persönlichen DATEV-Konto verknüpft werden. Danach ist eine Anmeldung ohne DATEV-Konto nicht mehr möglich.</p><p style="margin-top:8px">Nutzen Sie den <strong>DATEV-Konto-Assistenten</strong>, um ein neues DATEV-Konto zu erstellen und mit Ihrem Anmeldeverfahren zu verknüpfen — oder ein bereits vorhandenes DATEV-Konto zu verknüpfen. Bei der Erstellung wird zunächst eine Anmeldung mit SmartCard oder SmartLogin verlangt. Anschließend führt DATEV Sie schrittweise durch die Einrichtung.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-m">3</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>DATEV-Konto einrichten (bis 31.03.2026)</h4><p>Aus technischen Gründen gestaltet DATEV das Anmeldeverfahren neu. Die bisherigen Verfahren SmartCard / SmartLogin müssen bis spätestens 31.03.2026 mit einem persönlichen DATEV-Konto verknüpft werden. Danach ist eine Anmeldung ohne DATEV-Konto nicht mehr möglich.</p><p style="margin-top:8px">Nutzen Sie den <strong>DATEV-Konto-Assistenten</strong>, um ein neues DATEV-Konto zu erstellen und mit Ihrem Anmeldeverfahren zu verknüpfen — oder ein bereits vorhandenes zu verknüpfen. Bei der Erstellung wird zunächst eine Anmeldung mit SmartCard oder SmartLogin verlangt. Anschließend führt DATEV Sie schrittweise durch die Einrichtung. Der DATEV-Kontoassistent öffnet sich automatisch, wenn Sie DATEV Meine Steuern einrichten.</p></div></div>
       <div class="tl-step fade"><div class="tl-marker tl-marker-k">4</div><div class="tl-content"><span class="tl-tag tag-k">Kanzlei</span><h4>Zugriffsrechte vergeben</h4><p>Wir vergeben Ihnen in der DATEV Rechteverwaltung die Zugriffsrechte für die relevanten Steuerjahre.</p></div></div>
       <div class="tl-step fade"><div class="tl-marker tl-marker-m">5</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>Web-Anwendung nutzen</h4><p>DATEV Meine Steuern ist eine Web-Anwendung. Rufen Sie die Anwendung unter <strong>datev.de/meine-steuern</strong> auf und öffnen Sie sie über den Button „Jetzt starten". Die Anmeldung erfolgt über DATEV SmartLogin — Sie benötigen dafür die SmartLogin-App auf Ihrem Smartphone.</p><p style="margin-top:8px">Innerhalb der Anwendung können Sie Ihre Belege den jeweiligen Steuerjahren zuordnen und hochladen — auch bereits unterjährig, sobald Unterlagen vorliegen. Beim Hochladen ist eine Ordnerstruktur vorgegeben, an der Sie sich orientieren können. Die Ordner können bei Bedarf auch angepasst oder erweitert werden.</p><p style="margin-top:8px">Sobald alle Unterlagen bereitgestellt sind, senden Sie uns innerhalb der Anwendung ein <strong>Startsignal zur Bearbeitung</strong>.</p></div></div>
       <div class="tl-step fade"><div class="tl-marker tl-marker-m">6</div><div class="tl-content"><span class="tl-tag tag-m">Mandant</span><h4>App „Upload Mobil" nutzen</h4><p>Zur komfortablen Belegübermittlung empfehlen wir zusätzlich die App <strong>DATEV Upload Mobil</strong>. Damit können Sie Dokumente einfach abfotografieren und direkt als PDF in DATEV Meine Steuern hochladen.</p><p style="margin-top:8px"><em>Bitte beachten:</em> Die App dient ausschließlich der vereinfachten Belegübermittlung. Die Anwendung DATEV Meine Steuern selbst kann darin nicht genutzt werden.</p></div></div>
-      <div class="tl-step fade"><div class="tl-marker tl-marker-k">7</div><div class="tl-content"><span class="tl-tag tag-k">Kanzlei</span><h4>Steuererklärung und Bescheide bereitstellen</h4><p>Nach Fertigstellung Ihrer Steuererklärung stellen wir Ihnen diese in DATEV Meine Steuern zur Verfügung. Auf Wunsch senden wir Ihnen zusätzlich ein gedrucktes Exemplar. Auch eingehende Steuerbescheide können wir über die Anwendung für Sie bereitstellen.</p></div></div>
+      <div class="tl-step fade"><div class="tl-marker tl-marker-k">7</div><div class="tl-content"><span class="tl-tag tag-k">Kanzlei</span><h4>Steuererklärung und Bescheide bereitstellen</h4><p>Nach Fertigstellung stellen wir Ihnen die Steuererklärung direkt in DATEV Meine Steuern bereit — eine Abholung in der Kanzlei ist nicht nötig. Sie erhalten eine Benachrichtigung und können die Erklärung im Portal einsehen und mit einem Klick zur Übermittlung ans Finanzamt freigeben. Auch Steuerbescheide und weitere Dokumente erhalten Sie auf diesem Weg.</p></div></div>
       <div class="tl-step fade"><div class="tl-marker tl-marker-done">&#10003;</div><div class="tl-content"><span class="tl-tag tag-both">Gemeinsam</span><h4>Fragen? Wir helfen gerne.</h4><p>Sollten bei der Einrichtung oder Nutzung Fragen auftreten, unterstützen wir Sie selbstverständlich gerne — per Telefon, Video-Call oder persönlich.</p></div></div>
     </div>
   </div>
@@ -481,9 +480,9 @@ body{
       <h2 class="t-section fade">Bereit für den<br>digitalen Start?</h2>
       <p class="t-body fade">Ob Sie neu bei uns sind oder uns bereits als Mandant vertrauen — wir richten DATEV Meine Steuern gerne für Sie ein und machen Sie fit für die papierlose Steuererklärung.</p>
       <div class="cta-actions fade">
-        <button class="cta-primary" type="button">Termin vereinbaren <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-        <button class="cta-secondary" type="button">Per E-Mail anfragen</button>
+        <a class="cta-primary" href="mailto:rupp@stb-gerstmeier.de">Per E-Mail anfragen <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
+      <p class="t-body fade" style="margin-top:-24px;margin-bottom:40px"><a href="mailto:rupp@stb-gerstmeier.de" style="color:var(--primary)">rupp@stb-gerstmeier.de</a></p>
       <div class="cta-meta fade">
         <div class="cta-meta-item"><span class="dot"></span> Einrichtung in ca. 15 Min.</div>
         <div class="cta-meta-item"><span class="dot"></span> Höchste Datensicherheit</div>
@@ -523,15 +522,6 @@ body{
   var heroCta = document.querySelector('.hero-cta');
   if (heroCta) heroCta.addEventListener('click', function() { goSlide(1); });
 
-  /* CTA buttons — placeholder actions */
-  var ctaPrimary = document.querySelector('.cta-primary');
-  var ctaSecondary = document.querySelector('.cta-secondary');
-  if (ctaPrimary) ctaPrimary.addEventListener('click', function() {
-    alert('Hier Ihren Terminbuchungslink hinterlegen');
-  });
-  if (ctaSecondary) ctaSecondary.addEventListener('click', function() {
-    alert('Hier Ihre E-Mail-Adresse hinterlegen');
-  });
 
   /* Build nav dots as proper buttons */
   for (var i = 0; i < total; i++) {
